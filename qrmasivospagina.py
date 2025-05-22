@@ -73,7 +73,7 @@ def generar_index_html(empleados):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Índice de Empleados</title>
     <style>
-        body {{
+        body {
             font-family: Arial, sans-serif;
             margin: 20px;
             padding: 20px;
@@ -81,21 +81,21 @@ def generar_index_html(empleados):
             border-radius: 10px;
             max-width: 600px;
             margin: auto;
-        }}
-        h1 {{
+        }
+        h1 {
             color: #333;
-        }}
-        ul {{
+        }
+        ul {
             list-style-type: none;
             padding: 0;
-        }}
-        li {{
+        }
+        li {
             margin: 10px 0;
-        }}
-        a {{
+        }
+        a {
             text-decoration: none;
             color: #0066cc;
-        }}
+        }
     </style>
 </head>
 <body>
