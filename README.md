@@ -1,2 +1,0 @@
-# qr
-creacion de qr
