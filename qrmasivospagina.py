@@ -1,6 +1,7 @@
 import os
 import csv
 import qrcode
+from PIL import Image, ImageDraw
 
 # Carpeta donde se guardarán los perfiles HTML
 OUTPUT_FOLDER = 'empleados_html'
@@ -40,7 +41,7 @@ HTML_TEMPLATE = """
 </html>
 """
 
-def crear_carpetas_salida():
+def crear_carpeta_salida():
     os.makedirs(OUTPUT_FOLDER, exist_ok=True)
     os.makedirs(QR_FOLDER, exist_ok=True)
 
@@ -67,13 +68,44 @@ def generar_perfiles_html(empleados):
         with open(archivo_html, 'w', encoding='utf-8') as f:
             f.write(html_content)
 
-def generar_qr(empleados):
-    base_url = "https://tu-usuario.github.io/mi-proyecto/empleados_html/"
+def generar_qr(empleados, base_url):
     for emp in empleados:
-        url = f"{base_url}{emp['nombre']}_{emp['cargo']}_{emp['codigo']}.html"
-        qr = qrcode.make(url)
-        archivo_qr = os.path.join(QR_FOLDER, f"{emp['nombre']}_{emp['cargo']}_{emp['codigo']}.png")
-        qr.save(archivo_qr)
+        url = f"{base_url}/{OUTPUT_FOLDER}/{emp['nombre']}_{emp['cargo']}_{emp['codigo']}.html"
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_H,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(url)
+        qr.make(fit=True)
+
+        img = qr.make_image(fill_color="black", back_color="white").convert('RGB')
+
+        # Insertar el logo en el centro del QR
+        logo = Image.open('logoqr.png')
+        basewidth = 150  # Tamaño del logo
+        wpercent = (basewidth / float(logo.size[0]))
+        hsize = int((float(logo.size[1]) * float(wpercent)))
+        logo = logo.resize((basewidth, hsize), Image.Resampling.LANCZOS)
+
+        # Calcular la posición del círculo blanco
+        logo_position = ((img.size[0] - logo.size[0]) // 2, (img.size[1] - logo.size[1]) // 2)
+        circle_radius = logo.size[0] // 7  # Radio del círculo blanco (más grande)
+
+        # Dibujar el círculo blanco
+        draw = ImageDraw.Draw(img)
+        draw.ellipse(
+            (logo_position[0] - circle_radius, logo_position[1] - circle_radius,
+             logo_position[0] + circle_radius + logo.size[0], logo_position[1] + circle_radius + logo.size[1]),
+            fill='white'
+        )
+
+        # Pegar el logo encima del círculo blanco
+        img.paste(logo, logo_position, logo)
+
+        qr_filename = os.path.join(QR_FOLDER, f"{emp['nombre']}_{emp['cargo']}_{emp['codigo']}.png")
+        img.save(qr_filename)
 
 def generar_index_html(empleados):
     index_content = """
@@ -90,7 +122,7 @@ def generar_index_html(empleados):
             padding: 20px;
             border: 1px solid #ccc;
             border-radius: 10px;
-            max-width: 600px;
+            max-width: 800px;
             margin: auto;
         }
         h1 {
@@ -114,8 +146,8 @@ def generar_index_html(empleados):
     <ul>
 """
     for emp in empleados:
-        index_content += f'<li><a href="empleados_html/{emp["nombre"]}_{emp["cargo"]}_{emp["codigo"]}.html">{emp["nombre"]} - {emp["cargo"]} - {emp["codigo"]}</a></li>\n'
-    
+        index_content += f'<li><a href="{OUTPUT_FOLDER}/{emp["nombre"]}_{emp["cargo"]}_{emp["codigo"]}.html">{emp["nombre"]} - {emp["cargo"]} - {emp["codigo"]}</a></li>\n'
+
     index_content += """
     </ul>
 </body>
@@ -125,12 +157,12 @@ def generar_index_html(empleados):
         f.write(index_content)
 
 def main():
-    crear_carpetas_salida()
+    crear_carpeta_salida()
     empleados = leer_empleados_csv('datos_ejemplo.csv')
     generar_perfiles_html(empleados)
-    generar_qr(empleados)
+    generar_qr(empleados, 'https://tu-usuario.github.io/mi-proyecto')
     generar_index_html(empleados)
-    print("Perfiles HTML, códigos QR y índice generados correctamente.")
+    print("Perfiles HTML, códigos QR y el índice generados correctamente.")
 
 if __name__ == "__main__":
     main()
