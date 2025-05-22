@@ -15,28 +15,17 @@ HTML_TEMPLATE = """
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil de {nombre}</title>
-    <style>
-        body {{
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            max-width: 600px;
-            margin: auto;
-        }}
-        h1 {{
-            color: #333;
-        }}
-        p {{
-            font-size: 18px;
-        }}
-    </style>
+    <link rel="stylesheet" type="text/css" href="../estilos.css">
 </head>
 <body>
-    <h1>Perfil de {nombre}</h1>
-    <p><strong>Código:</strong> {codigo}</p>
-    <p><strong>Cargo:</strong> {cargo}</p>
+    <div class="card">
+        <h1>Perfil de {nombre}</h1>
+        <p><strong>Código:</strong> {codigo}</p>
+        <p><strong>Cargo:</strong> {cargo}</p>
+        <div class="qr-container">
+            <img src="../qrcodes/{nombre}_{cargo}_{codigo}.png" alt="QR Code">
+        </div>
+    </div>
 </body>
 </html>
 """
@@ -115,46 +104,85 @@ def generar_index_html(empleados):
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Índice de Empleados</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            max-width: 800px;
-            margin: auto;
-        }
-        h1 {
-            color: #333;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin: 10px 0;
-        }
-        a {
-            text-decoration: none;
-            color: #0066cc;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="estilos.css">
 </head>
 <body>
-    <h1>Índice de Empleados</h1>
-    <ul>
+    <div class="index-container">
+        <h1>Índice de Empleados</h1>
+        <ul>
 """
     for emp in empleados:
         index_content += f'<li><a href="{OUTPUT_FOLDER}/{emp["nombre"]}_{emp["cargo"]}_{emp["codigo"]}.html">{emp["nombre"]} - {emp["cargo"]} - {emp["codigo"]}</a></li>\n'
 
     index_content += """
-    </ul>
+        </ul>
+    </div>
 </body>
 </html>
 """
     with open('index.html', 'w', encoding='utf-8') as f:
         f.write(index_content)
+
+def crear_archivo_css():
+    css_content = """
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+    background-color: #f0f8ff;
+}
+
+h1 {
+    color: #1E90FF;
+}
+
+p {
+    font-size: 18px;
+    color: #333;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0;
+}
+
+a {
+    text-decoration: none;
+    color: #1E90FF;
+}
+
+a:hover {
+    color: #ff69b4;
+}
+
+.index-container {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+.card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+}
+
+.qr-container {
+    text-align: center;
+    margin-top: 20px;
+}
+"""
+    with open('estilos.css', 'w', encoding='utf-8') as f:
+        f.write(css_content)
 
 def main():
     crear_carpeta_salida()
@@ -162,7 +190,8 @@ def main():
     generar_perfiles_html(empleados)
     generar_qr(empleados, 'https://tu-usuario.github.io/mi-proyecto')
     generar_index_html(empleados)
-    print("Perfiles HTML, códigos QR y el índice generados correctamente.")
+    crear_archivo_css()
+    print("Perfiles HTML, códigos QR, índice y estilos generados correctamente.")
 
 if __name__ == "__main__":
     main()
