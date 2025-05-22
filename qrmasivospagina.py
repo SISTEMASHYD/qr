@@ -38,8 +38,34 @@ HTML_TEMPLATE = """
 </html>
 """
 
-# Plantilla HTML para el índice
-INDEX_TEMPLATE = """
+def crear_carpeta_salida():
+    os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+
+def leer_empleados_csv(nombre_archivo):
+    empleados = []
+    with open(nombre_archivo, newline='', encoding='latin-1') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            empleados.append({
+                'nombre': row['Nombre'],
+                'codigo': row['Código'],
+                'cargo': row['Cargo']
+            })
+    return empleados
+
+def generar_perfiles_html(empleados):
+    for emp in empleados:
+        html_content = HTML_TEMPLATE.format(
+            nombre=emp['nombre'],
+            codigo=emp['codigo'],
+            cargo=emp['cargo']
+        )
+        archivo_html = os.path.join(OUTPUT_FOLDER, f"{emp['codigo']}.html")
+        with open(archivo_html, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+
+def generar_index_html(empleados):
+    index_content = """
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -70,63 +96,31 @@ INDEX_TEMPLATE = """
             text-decoration: none;
             color: #0066cc;
         }}
-        a:hover {{
-            text-decoration: underline;
-        }}
     </style>
 </head>
 <body>
     <h1>Índice de Empleados</h1>
     <ul>
-        {empleados_list}
+"""
+    for emp in empleados:
+        index_content += f'<li><a href="{OUTPUT_FOLDER}/{emp["codigo"]}.html">{emp["nombre"]}</a></li>\n'
+    
+    index_content += """
     </ul>
 </body>
 </html>
 """
-
-def crear_carpeta_salida():
-    os.makedirs(OUTPUT_FOLDER, exist_ok=True)
-
-def leer_empleados_csv(nombre_archivo):
-    empleados = []
-    with open(nombre_archivo, newline='', encoding='latin-1') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            empleados.append({
-                'nombre': row['Nombre'],
-                'codigo': row['Código'],
-                'cargo': row['Cargo']
-            })
-    return empleados
-
-def generar_perfiles_html(empleados):
-    for emp in empleados:
-        html_content = HTML_TEMPLATE.format(
-            nombre=emp['nombre'],
-            codigo=emp['codigo'],
-            cargo=emp['cargo']
-        )
-        archivo_html = os.path.join(OUTPUT_FOLDER, f"{emp['codigo']}.html")
-        with open(archivo_html, 'w', encoding='utf-8') as f:
-            f.write(html_content)
-
-def generar_indice_html(empleados):
-    empleados_list = ""
-    for emp in empleados:
-        empleados_list += f'<li><a href="{emp["codigo"]}.html">{emp["nombre"]}</a></li>\n'
-    
-    index_content = INDEX_TEMPLATE.format(empleados_list=empleados_list)
-    archivo_index = os.path.join(OUTPUT_FOLDER, "index.html")
-    with open(archivo_index, 'w', encoding='utf-8') as f:
+    with open('index.html', 'w', encoding='utf-8') as f:
         f.write(index_content)
 
 def main():
     crear_carpeta_salida()
     empleados = leer_empleados_csv('datos_ejemplo.csv')
     generar_perfiles_html(empleados)
-    generar_indice_html(empleados)
+    generar_index_html(empleados)
     print("Perfiles HTML e índice generados correctamente.")
 
 if __name__ == "__main__":
     main()
+
 
