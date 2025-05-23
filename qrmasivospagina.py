@@ -162,7 +162,7 @@ a:hover {
 .index-container {
     border: 1px solid #ccc;
     border-radius: 10px;
-    max-width: 800px;
+    max-width: 400px;
     margin: auto;
     padding: 20px;
 }
@@ -178,7 +178,7 @@ a:hover {
 
 .qr-container {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 """
     with open('estilos.css', 'w', encoding='utf-8') as f:
