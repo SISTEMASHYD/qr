@@ -18,17 +18,21 @@ HTML_TEMPLATE = """
     <link rel="stylesheet" type="text/css" href="../estilos.css">
 </head>
 <body>
-    <div class="card">
-        <h1>Perfil de {nombre}</h1>
-        <p><strong>Código:</strong> {codigo}</p>
-        <p><strong>Cargo:</strong> {cargo}</p>
-        <div class="qr-container">
-            <img src="../qrcodes/{nombre}_{cargo}_{codigo}.png" alt="QR Code">
+    <div class="card credencial">
+        <div class="logo-superior-container">
+            <img src="../logovcard.jpg" alt="Logo de Dolphy Helados" class="logo-superior">
+        </div>
+        <div class="info-container">
+            <h1>{nombre}</h1>
+            <p><strong>Cargo:</strong> {cargo}</p>
+            <p><strong>Código:</strong> {codigo}</p>
         </div>
     </div>
 </body>
 </html>
+
 """
+
 
 def crear_carpeta_salida():
     os.makedirs(OUTPUT_FOLDER, exist_ok=True)
@@ -129,6 +133,10 @@ body {
     font-family: Arial, sans-serif;
     margin: 20px;
     padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    max-width: 800px;
+    margin: auto;
     background-color: #f0f8ff;
 }
 
@@ -159,27 +167,56 @@ a:hover {
     color: #ff69b4;
 }
 
-.index-container {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-}
-
 .card {
-    border: 1px solid #ccc;
+    background-color: white;
     border-radius: 10px;
-    max-width: 600px;
-    margin: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    background-color: #fff;
+    margin: 20px 0;
 }
 
-.qr-container {
-    text-align: center;
-    margin-top: 10px;
+/* NUEVO: estilo tipo credencial */
+.credencial {
+    width: 350px;
+    height: auto; /* más flexible que 500px fijos */
+    border: 4px solid #1E90FF;
+    border-radius: 15px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    gap: 10px; /* Espacio uniforme entre elementos internos */
 }
+
+.logo-superior-container {
+    text-align: center;
+}
+
+.logo-superior {
+    max-width: 200px;
+    height: auto;
+    margin-bottom: 10px; /* Espacio debajo del logo */
+}
+
+.info-container {
+    text-align: center;
+}
+
+h1 {
+    color: #1E90FF;
+    font-size: 24px;
+    margin: 10px 0;
+}
+
+p {
+    font-size: 18px;
+    margin: 5px 0;
+    color: #333;
+}
+
+
 """
     with open('estilos.css', 'w', encoding='utf-8') as f:
         f.write(css_content)
@@ -188,11 +225,10 @@ def main():
     crear_carpeta_salida()
     empleados = leer_empleados_csv('datos_ejemplo.csv')
     generar_perfiles_html(empleados)
-    generar_qr(empleados, 'https://tu-usuario.github.io/mi-proyecto')
+    generar_qr(empleados, 'https://sistemashyd.github.io/qr/')
     generar_index_html(empleados)
     crear_archivo_css()
     print("Perfiles HTML, códigos QR, índice y estilos generados correctamente.")
 
 if __name__ == "__main__":
     main()
-
