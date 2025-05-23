@@ -216,6 +216,82 @@ p {
     color: #333;
 }
 
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+        margin: 10px;
+    }
+
+    .credencial {
+        width: 100%;
+        padding: 15px;
+        border-width: 2px;
+    }
+
+    .logo-superior {
+        max-width: 100%;
+        height: auto;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    p {
+        font-size: 16px;
+    }
+}
+
+.index-container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.index-container h1 {
+    text-align: center;
+    color: #1E90FF;
+    margin-bottom: 30px;
+}
+
+.index-container ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 0;
+}
+
+.index-container li {
+    list-style: none;
+    background-color: #f9f9f9;
+    border: 2px solid #1E90FF;
+    border-radius: 10px;
+    padding: 15px 20px;
+    width: 280px;
+    text-align: center;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.index-container li:hover {
+    transform: scale(1.05);
+    background-color: #e6f2ff;
+}
+
+.index-container a {
+    font-size: 18px;
+    color: #1E90FF;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.index-container a:hover {
+    color: gray;
+}
+
 
 """
     with open('estilos.css', 'w', encoding='utf-8') as f:
